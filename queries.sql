@@ -101,6 +101,9 @@ DECLARE username VARCHAR(255) = 'johndoe'
 IF EXIST(SELECT * FROM users WHERE DisplayName = @username and (AccountId = @accid or Password = @pass) )
 BEGIN
     Print 'User login successful'
+    UPDATE users
+    SET LastAccessDate = CURRENT_DATE
+    WHERE DisplayName = @username and (AccountId = @accid or Password = @pass)
 END
 ELSE
 BEGIN
@@ -113,6 +116,9 @@ DECLARE adminname VARCHAR(255) = 'johndoe'
 IF EXIST(SELECT * FROM admins WHERE DisplayName = @adminname and Password = @pass)
 BEGIN
     Print 'Admin login successful'
+    UPDATE admins
+    SET LastAccessDate = CURRENT_DATE
+    WHERE  DisplayName = @adminname and Password = @pass
 END
 ELSE
 BEGIN
