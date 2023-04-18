@@ -127,5 +127,23 @@ END
 
 
 
+--new questions page
+DECLARE owneruserid INTEGER := 99
+        title TEXT := "sampletitle"
+        contentlicense TEXT := "CC BY-SA 4.0"
+        body TEXT := "samplebody"
+        tagsss := ["tag1", "tag2", "tag3", "tag4"] 
+FOR r in tagsss:
+    UPDATE tags
+    SET Count = Count + 1
+    WHERE tags.TagName = r 
+INSERT INTO posts(OwnerUserId,LastEditorUserId,PostTypeId,AcceptedAnswerId,Score,ParentId,ViewCount,AnswerCount
+            ,CommentCount,OwnerDisplayName,LastEditorDisplayName,Title,Tags,ContentLicense,Body,FavoriteCount
+            ,CreationDate,CommunityOwnedDate,ClosedDate,LastEditDate,LastActivityDate) VALUES
+            (@owneruserid,@owneruserid,1,NULL,0,NULL,0,0,0, (SELECT DisplayName from users where Id = @owneruserid), 
+            (SELECT DisplayName from users where Id = @owneruserid) , @title , @tagss , @contentlicense, @body , 
+            NULL ,CURRENT_DATE ,NULL ,NULL , CURRENT_DATE , CURRENT_DATE );
+
+
 
 
