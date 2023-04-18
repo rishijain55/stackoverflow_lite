@@ -367,4 +367,13 @@ with t1(personid , ansid) as
 
 
 
+--unanswered questions of the user ordered by creation date
+select * 
+from posts p 
+where p.OwnerUserId = 5 and p.PostTypeId = 1 and (p.AnswerCount = 0 or p.AnswerCount = NULL)
+order by p.CreationDate desc;
+
+
+
+
 
