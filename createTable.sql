@@ -16,6 +16,16 @@ CREATE TABLE users (
   LastAccessDate TIMESTAMP NOT NULL
 );
 
+DROP TABLE IF EXISTS admins;
+CREATE TABLE admins (
+    Id INT NOT NULL PRIMARY KEY ,
+    DisplayName VARCHAR(255) NOT NULL,
+    WebsiteUrl VARCHAR(255) ,
+    CreationDate TIMESTAMP NOT NULL,
+    LastAccessDate TIMESTAMP NOT NULL,
+    Password VARCHAR(255) NOT NULL
+);
+
 DROP TABLE IF EXISTS badges;
 CREATE TABLE badges (
   Id INT NOT NULL PRIMARY KEY,
