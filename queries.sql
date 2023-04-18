@@ -376,4 +376,17 @@ order by p.CreationDate desc;
 
 
 
+--returns the number of accepted answers for a person
+with t1(ansid) as
+(
+    select Id 
+    from posts 
+    where OwnerUserId = 1 and PostTypeId = 2
+)
+    select count(ansid) 
+    from t1 , posts
+    where ansid = AcceptedAnswerId and PostTypeId = 1;
+
+
+
 
