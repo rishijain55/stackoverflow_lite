@@ -98,13 +98,25 @@ SELECT * FROM users WHERE id IN (SELECT id FROM v5);
 DECLARE username VARCHAR(255) = 'johndoe'
         accid INT = 99
         pass VARCHAR(255) = 'samplepass'
-IF EXIST(SELECT * FROM users WHERE UserID = @username and (AccountId = @accid or Password = @pass) )
+IF EXIST(SELECT * FROM users WHERE DisplayName = @username and (AccountId = @accid or Password = @pass) )
 BEGIN
     Print 'User login successful'
 END
 ELSE
 BEGIN
     INSERT INTO users (AccountId, Reputation , Views, DownVotes,UpVotes, DisplayName, Location,WebsiteUrl, AboutMe, CreationDate ,LastAccessDate, Password) VALUES(@accid, 0, 0,0,0,@username , NULL, NULL,NULL,CURRENT_DATE,CURRENT_DATE , @pass )
+END
+
+--admin login
+DECLARE adminname VARCHAR(255) = 'johndoe'
+        pass VARCHAR(255) = 'samplepass'
+IF EXIST(SELECT * FROM admins WHERE DisplayName = @adminname and Password = @pass)
+BEGIN
+    Print 'Admin login successful'
+END
+ELSE
+BEGIN
+    Print 'Admin sign up not permitted'
 END
 
 
