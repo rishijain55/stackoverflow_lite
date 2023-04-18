@@ -342,3 +342,29 @@ VALUES (:id, :postId, CURRENT_DATE, :userId, :bountyAmount);
 INSERT INTO votes (Id, PostId, 3, CreationDate, UserId, BountyAmount)
 VALUES (:id, :postId, CURRENT_DATE, :userId, :bountyAmount);
 
+
+
+--gold badges : list of people 
+with t1(personid , ansid) as
+(
+    select a.OwnerUserId , a.Id
+    from posts a 
+    where a.PostTypeId = 2
+),
+    t2(personid, ansid) as
+(
+    select personid , ansid
+    from t1 , posts b
+    where ansid = b.AcceptedAnswerId
+),
+    t3(personid, countans) as
+(
+    select personid, count(ansid)
+    from t2
+    group by personid
+)
+    select personid from t3 where countans >= 50;
+
+
+
+
