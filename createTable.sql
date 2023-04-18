@@ -121,4 +121,35 @@ CREATE TABLE votes (
     CreationDate TIMESTAMP NOT NULL
 );
 
+--Create a new table Person_like_tag
+DROP TABLE IF EXISTS Person_like_tag;
+CREATE TABLE Person_like_tag (
+    person_id INT,
+    tag_id INT,
+    PRIMARY KEY (person_id, tag_id),
+    FOREIGN KEY (person_id) REFERENCES users(id),
+    FOREIGN KEY (tag_id) REFERENCES tags(id)
+);
+
+--Create a new table Person_follows_post
+DROP TABLE IF EXISTS Person_follows_post;
+CREATE TABLE Person_follows_post (
+    person_id INT,
+    post_id INT,
+    PRIMARY KEY (person_id, post_id),
+    FOREIGN KEY (person_id) REFERENCES users(id),
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+);
+
+--Create a new table Person_follows_person
+DROP TABLE IF EXISTS Person_follows_person;
+CREATE TABLE Person_follows_person (
+    person_id INT,
+    person_id_followed INT,
+    PRIMARY KEY (person_id, person_id_followed),
+    FOREIGN KEY (person_id) REFERENCES users(id),
+    FOREIGN KEY (person_id_followed) REFERENCES users(id)
+);
+
+
 END TRANSACTION;
