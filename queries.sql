@@ -3,62 +3,38 @@
 --Check all (top 10) posts by a user
 SELECT * FROM posts WHERE owneruserid = 5 LIMIT 10;
 
+
 --Check all (top 10) posts by a user with a specific tag
 SELECT * FROM posts WHERE owneruserid = 5 AND tags LIKE  '%<compilers>%' LIMIT 10;
+
 
 --Create a new badge id, userid, class, name, tagbased, date
 INSERT INTO badges (id, userid, class, name, tagbased, date) VALUES (1, 5, 1, 'Compiler', TRUE, '2018-01-01');
 
+
 --Create a new vote for a post
 INSERT INTO votes (id, postid, votetypeid, creationdate, userid) VALUES (1, 5, 1, '2018-01-01', 5);
+
 
 --Create a new vote for a post with bounty amount
 INSERT INTO votes (id, postid, votetypeid, creationdate, userid, bountyamount) VALUES (1, 5, 1, '2018-01-01', 5, 100);
 
---Create a new table Person_like_tag
-CREATE TABLE Person_like_tag (
-    person_id INT,
-    tag_id INT,
-    PRIMARY KEY (person_id, tag_id),
-    FOREIGN KEY (person_id) REFERENCES users(id),
-    FOREIGN KEY (tag_id) REFERENCES tags(id)
-);
-
---Create a new table Person_follows_post
-CREATE TABLE Person_follows_post (
-    person_id INT,
-    post_id INT,
-    PRIMARY KEY (person_id, post_id),
-    FOREIGN KEY (person_id) REFERENCES users(id),
-    FOREIGN KEY (post_id) REFERENCES posts(id)
-);
-
---Create a new table Person_follows_person
-CREATE TABLE Person_follows_person (
-    person_id INT,
-    person_id_followed INT,
-    PRIMARY KEY (person_id, person_id_followed),
-    FOREIGN KEY (person_id) REFERENCES users(id),
-    FOREIGN KEY (person_id_followed) REFERENCES users(id)
-);
 
 --Fetch all posts that a user has voted on
 SELECT * FROM posts WHERE id IN (SELECT postid FROM votes WHERE userid = 5);
 
+
 --Fetch all posts that a user has voted on with a specific tag
 SELECT * FROM posts WHERE id IN (SELECT postid FROM votes WHERE userid = 5) AND tags LIKE  '%<compilers>%' LIMIT 10;
+
 
 --Fetch all posts that a user follows
 SELECT * FROM posts WHERE id IN (SELECT post_id FROM Person_follows_post WHERE person_id = 5);
 
+
 --Fetch all tags that a user likes 
 SELECT * FROM tags WHERE id IN (SELECT tag_id FROM Person_like_tag WHERE person_id = 5);
 
---Find latest posts that with the tag that user likes (Person_like_tag)
-WITH v AS (SELECT person_id, tag_id FROM Person_like_tag WHERE person_id = 5),
-t AS (SELECT tagname FROM tags WHERE id IN (SELECT tag_id FROM v)),
-p AS (SELECT * FROM posts WHERE tags LIKE CONCAT('%<', t.tagname, '>%' ))
-SELECT * FROM p ORDER BY p.creationdate DESC LIMIT 10;
 
 --Find latest posts that with the tag that user likes (Person_like_tag) and user follows (Person_follows_post)
 WITH v AS (SELECT person_id, tag_id FROM Person_like_tag WHERE person_id = 5),
@@ -66,23 +42,18 @@ t AS (SELECT tagname FROM tags WHERE id IN (SELECT tag_id FROM v)),
 p AS (SELECT * FROM posts WHERE tags LIKE CONCAT('%<', t.tagname, '>%' ) AND id IN (SELECT post_id FROM Person_follows_post WHERE person_id = 5))
 SELECT * FROM p ORDER BY p.creationdate DESC LIMIT 10;
 
+
 --Retreive latest questions by a tag
 SELECT * FROM posts WHERE tags LIKE  '%<compilers>%' AND posttypeid = 1 ORDER BY creationdate DESC LIMIT 10;
+
 
 --Retreive all tags for a question
 SELECT tags FROM posts WHERE id = 5;
 
---Add a new answer to a question
-INSERT INTO posts (id, posttypeid, acceptedanswerid, parentid, creationdate, score, viewcount, body, owneruserid, ownerdisplayname, lasteditoruserid, lasteditordisplayname, lasteditdate, lastactivitydate, communityowneddate, closeddate, title, tags, answercount, commentcount, favoritecount, contentlicense) VALUES (1, 2, NULL, 5, '2018-01-01', 0, 0, 'This is an answer', 5, 'user5', NULL, NULL, NULL, '2018-01-01', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'CC BY-SA 2.5');
-
---Add a new comment to a question
-INSERT INTO posts (id, posttypeid, acceptedanswerid, parentid, creationdate, score, viewcount, body, owneruserid, ownerdisplayname, lasteditoruserid, lasteditordisplayname, lasteditdate, lastactivitydate, communityowneddate, closeddate, title, tags, answercount, commentcount, favoritecount, contentlicense) VALUES (1, 2, NULL, 5, '2018-01-01', 0, 0, 'This is a comment', 5, 'user5', NULL, NULL, NULL, '2018-01-01', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'CC BY-SA 2.5');
-
---Add a new comment to an answer (Check this)
-INSERT INTO posts (id, posttypeid, acceptedanswerid, parentid, creationdate, score, viewcount, body, owneruserid, ownerdisplayname, lasteditoruserid, lasteditordisplayname, lasteditdate, lastactivitydate, communityowneddate, closeddate, title, tags, answercount, commentcount, favoritecount, contentlicense) VALUES (1, 2, NULL, 5, '2018-01-01', 0, 0, 'This is a comment', 5, 'user5', NULL, NULL, NULL, '2018-01-01', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'CC BY-SA 2.5');
 
 --Update "aboutme" for a user in users table
 UPDATE users SET aboutme = 'I am a compiler expert' WHERE id = 5;
+
 
 
 --Suggest new people to follow that I don't already follow based on common tags and lastaccessdate is latest
@@ -92,6 +63,41 @@ v3 AS (SELECT DISTINCT person_id FROM v2 WHERE person_id NOT IN (SELECT person_i
 v4 AS (SELECT id, lastaccessdate FROM users WHERE id IN (SELECT person_id FROM v3) ORDER BY lastaccessdate DESC LIMIT 10),
 v5 AS (SELECT id FROM v4)
 SELECT * FROM users WHERE id IN (SELECT id FROM v5);
+
+
+--Update user details everything except id
+UPDATE users SET DisplayName = 'myName', Location = 'newLocation', websiteUrl = 'myUrl', aboutMe = 'This is me :)' WHERE users.id = 5;
+
+
+--Select 100 users with maximum reputation
+SELECT * FROM users ORDER BY reputation DESC LIMIT 100;
+
+
+--Add an entry to post_linked
+INSERT INTO post_links (id, creationdate, postid, relatedpostid, linktypeid) VALUES (1, CURRENT_DATE, 5, 1, 1);
+
+
+--Given a postID, find all linked posts using postlinks table
+SELECT * FROM posts WHERE id IN (SELECT relatedpostid FROM post_links WHERE postid = 5);
+
+
+--edit a post
+--two things need to be done here
+--first the post needs to be updated
+--second the post history needs to be updated
+
+--update the post
+UPDATE posts SET lasteditoruserid = 5, tags = '<newTags>', body = 'This is new body', title = 'This is new title', lasteditdate = CURRENT_DATE WHERE id = 5;
+
+--update the post history
+INSERT INTO post_history (id, posthistorytypeid, postid, revisionguid, creationdate, userid, userdisplayname, comment) VALUES (2, 1, 5, '1', CURRENT_DATE, 5, '', 'This is a comment');
+--revisionGUID will be a random string generated using python
+
+
+SELECT * FROM Person_follows_person WHERE person_id = 5;
+
+
+SELECT COUNT(*) FROM Person_follows_person WHERE person_id_followed = 5;
 
 
 --account login and signup(if user does not exist already)
@@ -110,6 +116,7 @@ BEGIN
     INSERT INTO users (AccountId, Reputation , Views, DownVotes,UpVotes, DisplayName, Location,WebsiteUrl, AboutMe, CreationDate ,LastAccessDate, Password) VALUES(@accid, 0, 0,0,0,@username , NULL, NULL,NULL,CURRENT_DATE,CURRENT_DATE , @pass )
 END
 
+
 --admin login
 DECLARE adminname VARCHAR(255) = 'johndoe'
         pass VARCHAR(255) = 'samplepass'
@@ -124,7 +131,6 @@ ELSE
 BEGIN
     Print 'Admin sign up not permitted'
 END
-
 
 
 --new questions page
@@ -174,8 +180,8 @@ LIMIT 100
 SELECT Id FROM posts WHERE OwnerUserId in (SELECT OwnerUserId FROM helpers) AND PostTypeId = 1
 ORDER BY CreationDate DESC;
 
--- Get the users according to accepted answer count from a given date
 
+-- Get the users according to accepted answer count from a given date
 WITH acceptedAnswerCount AS ( 
 SELECT post2.OwnerUserId, COUNT(post2.OwnerUserId) AS answerCount 
 FROM (
@@ -191,8 +197,8 @@ INNER JOIN acceptedAnswerCount
 ON users.Id = acceptedAnswerCount.OwnerUserId 
 ORDER BY answerCount DESC;
 
---Get the users leaderboard according to value = accepted answer count*40 + answer count*10 + question count*5 + comment count*1
 
+--Get the users leaderboard according to value = accepted answer count*40 + answer count*10 + question count*5 + comment count*1
 WITH acceptedAnswerCount AS (
 SELECT post2.OwnerUserId, COUNT(post2.OwnerUserId) AS answerCount
 FROM (
@@ -248,8 +254,8 @@ WHERE PostId = :postId AND VoteTypeId = 3
 SELECT upvoteCount, downvoteCount
 FROM upvoteCount, downvoteCount;
 
--- Get the most interesting answered questions based on the score, reputation of asker, upvotes and downvotes of the answer
 
+-- Get the most interesting answered questions based on the score, reputation of asker, upvotes and downvotes of the answer
 WITH RelevantPosts 
 AS ( SELECT Id, Score, OwnerUserId 
 FROM posts 
@@ -288,11 +294,10 @@ ORDER BY totalScore DESC
 LIMIT 100;
 
 
-
-
 -- . To fetch the tags with the most questions all time
 SELECT TagName, Id, Count FROM tags
 ORDER BY Count Desc LIMIT 20;
+
 
 -- To fetch the tags with with the most questions after :date
 With RelevantPosts AS (
@@ -316,9 +321,7 @@ FROM (
 ) AS tags where tag != '';
 
 
-
 --to fetch the questions similar to the given question based on the tags
-
 WITH tagsForGivenQuestion AS (
 SELECT *
 FROM (
@@ -335,13 +338,15 @@ GROUP BY posts.Id
 ORDER BY count DESC
 LIMIT 10;
 
+
 --upvote
 INSERT INTO votes (Id, PostId, 2, CreationDate, UserId, BountyAmount)
 VALUES (:id, :postId, CURRENT_DATE, :userId, :bountyAmount);
+
+
 --downvote
 INSERT INTO votes (Id, PostId, 3, CreationDate, UserId, BountyAmount)
 VALUES (:id, :postId, CURRENT_DATE, :userId, :bountyAmount);
-
 
 
 --gold badges : list of people 
@@ -366,14 +371,11 @@ with t1(personid , ansid) as
     select personid from t3 where countans >= 50;
 
 
-
 --unanswered questions of the user ordered by creation date
 select * 
 from posts p 
 where p.OwnerUserId = 5 and p.PostTypeId = 1 and (p.AnswerCount = 0 or p.AnswerCount = NULL)
 order by p.CreationDate desc;
-
-
 
 
 --returns the number of accepted answers for a person
@@ -386,7 +388,3 @@ with t1(ansid) as
     select count(ansid) 
     from t1 , posts
     where ansid = AcceptedAnswerId and PostTypeId = 1;
-
-
-
-
