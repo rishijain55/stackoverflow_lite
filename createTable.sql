@@ -29,7 +29,7 @@ CREATE TABLE admins (
 DROP TABLE IF EXISTS badges;
 CREATE TABLE badges (
   Id INT NOT NULL PRIMARY KEY,
-  UserId INT NOT NULL REFERENCES users(Id),
+  UserId INT NOT NULL REFERENCES users(Id) ON DELETE CASCADE,
   Class INT NOT NULL,
   Name VARCHAR(255) NOT NULL,
   TagBased BOOLEAN NOT NULL,
@@ -40,8 +40,8 @@ CREATE TABLE badges (
 DROP TABLE IF EXISTS comments;
 CREATE TABLE comments (
   Id INT NOT NULL PRIMARY KEY,
-  PostId INT NOT NULL REFERENCES posts(Id),
-  UserId INT REFERENCES users(Id),
+  PostId INT NOT NULL REFERENCES posts(Id) ON DELETE CASCADE,
+  UserId INT REFERENCES users(Id) ON DELETE CASCADE,
   --If userid doesn't exist, then the user commented as a guest.
   --She needs name and email, but email is not included in public data for privacy reasons. 
   Score INT NOT NULL,
@@ -54,7 +54,7 @@ CREATE TABLE comments (
 DROP TABLE IF EXISTS post_history;
 CREATE TABLE post_history (
   Id INT NOT NULL PRIMARY KEY,
-  PostId INT NOT NULL REFERENCES posts(Id),
+  PostId INT NOT NULL REFERENCES posts(Id) ON DELETE CASCADE,
   UserId INT REFERENCES users(Id),
   PostHistoryTypeId INT NOT NULL,
   UserDisplayName VARCHAR(255) ,
@@ -69,8 +69,8 @@ CREATE TABLE post_history (
 DROP TABLE IF EXISTS post_links;
 CREATE TABLE post_links (
   Id INT NOT NULL PRIMARY KEY,
-  RelatedPostId INT NOT NULL REFERENCES posts(Id),
-  PostId INT NOT NULL REFERENCES posts(Id),
+  RelatedPostId INT NOT NULL REFERENCES posts(Id) ON DELETE CASCADE,
+  PostId INT NOT NULL REFERENCES posts(Id) ON DELETE CASCADE,
   LinkTypeId INT NOT NULL,
   CreationDate TIMESTAMP NOT NULL
 
@@ -84,7 +84,7 @@ CREATE TABLE posts (
   PostTypeId INTEGER NOT NULL,
   AcceptedAnswerId INTEGER REFERENCES posts(Id),
   Score INTEGER NOT NULL,
-  ParentId INTEGER REFERENCES posts(Id),
+  ParentId INTEGER REFERENCES posts(Id) ON DELETE CASCADE,
   ViewCount INTEGER,
   AnswerCount INTEGER,
   CommentCount INTEGER,
@@ -114,8 +114,8 @@ CREATE TABLE tags (
 DROP TABLE IF EXISTS votes;
 CREATE TABLE votes (
     Id INT NOT NULL PRIMARY KEY,
-    UserId INT  REFERENCES users(Id),
-    PostId INT NOT NULL REFERENCES posts(Id),
+    UserId INT  REFERENCES users(Id) ON DELETE CASCADE,
+    PostId INT NOT NULL REFERENCES posts(Id) ON DELETE CASCADE,
     VoteTypeId INT NOT NULL,
     BountyAmount INT ,
     CreationDate TIMESTAMP NOT NULL
