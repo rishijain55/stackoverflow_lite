@@ -145,5 +145,200 @@ INSERT INTO posts(OwnerUserId,LastEditorUserId,PostTypeId,AcceptedAnswerId,Score
             NULL ,CURRENT_DATE ,NULL ,NULL , CURRENT_DATE , CURRENT_DATE );
 
 
+-- get person who has answered your question with number
+-- answer of a post is post and PostTypeID indicates it is an answer. 1 is question, 2 is answer
 
+
+--helpers
+SET User1id =1;
+SELECT post2.OwnerUserId, COUNT(post2.OwnerUserId) AS answerCount
+FROM (SELECT * FROM posts WHERE OwnerUserId = "X" AND PostTypeId = 1) AS post1
+JOIN (SELECT * FROM posts WHERE PostTypeId = 2) AS post2
+ON post1.Id = post2.ParentId
+GROUP BY post2.OwnerUserId
+ORDER BY answerCount DESC;
+LIMIT 100;
+
+
+-- get the questions of your helpers
+
+With helpers as (
+SELECT post2.OwnerUserId, COUNT(post2.OwnerUserId) AS answerCount
+FROM (SELECT * FROM posts WHERE OwnerUserId = "X" AND PostTypeId = 1) AS post1
+JOIN (SELECT * FROM posts WHERE PostTypeId = 2) AS post2
+ON post1.Id = post2.ParentId
+GROUP BY post2.OwnerUserId
+ORDER BY answerCount DESC
+LIMIT 100
+)
+SELECT Id FROM posts WHERE OwnerUserId in (SELECT OwnerUserId FROM helpers) AND PostTypeId = 1
+ORDER BY CreationDate DESC;
+
+-- Get the users according to accepted answer count from a given date
+
+WITH acceptedAnswerCount AS ( 
+SELECT post2.OwnerUserId, COUNT(post2.OwnerUserId) AS answerCount 
+FROM (
+SELECT ParentId, Id, OwnerUserId FROM posts WHERE PostTypeId = 2 AND CreationDate > '2019-01-01') AS post2 
+INNER JOIN (SELECT Id, AcceptedAnswerId, OwnerUserId FROM posts WHERE PostTypeId = 1) AS post1 
+ON post2.ParentId = post1.Id WHERE post2.Id = post1.AcceptedAnswerId 
+GROUP BY post2.OwnerUserId 
+ORDER BY answerCount DESC 
+LIMIT 100 ) 
+SELECT DisplayName, Id, answerCount 
+FROM users 
+INNER JOIN acceptedAnswerCount 
+ON users.Id = acceptedAnswerCount.OwnerUserId 
+ORDER BY answerCount DESC;
+
+--Get the users leaderboard according to value = accepted answer count*40 + answer count*10 + question count*5 + comment count*1
+
+WITH acceptedAnswerCount AS (
+SELECT post2.OwnerUserId, COUNT(post2.OwnerUserId) AS answerCount
+FROM (
+SELECT ParentId, Id, OwnerUserId FROM posts WHERE PostTypeId = 2 AND CreationDate > '2019-01-01') AS post2
+INNER JOIN (SELECT Id, AcceptedAnswerId, OwnerUserId FROM posts WHERE PostTypeId = 1) AS post1
+ON post2.ParentId = post1.Id WHERE post2.Id = post1.AcceptedAnswerId
+GROUP BY post2.OwnerUserId
+
+), 
+answerCount AS (
+SELECT post2.OwnerUserId, COUNT(post2.OwnerUserId) AS answerCount
+FROM Posts AS post2 WHERE post2.PostTypeId = 2 AND post2.CreationDate > '2019-01-01'
+GROUP BY post2.OwnerUserId
+
+),
+questionCount AS (
+SELECT OwnerUserId, COUNT(OwnerUserId) AS questionCount
+FROM posts
+WHERE PostTypeId = 1 AND CreationDate > '2019-01-01'
+GROUP BY OwnerUserId
+),
+commentCount AS (
+SELECT UserId, COUNT(UserId) AS commentCount
+FROM comments
+WHERE CreationDate > '2019-01-01'
+GROUP BY UserId
+)
+,
+totalScore AS (
+SELECT acceptedAnswerCount.OwnerUserId, acceptedAnswerCount.answerCount*40 + answerCount.answerCount*10 + questionCount.questionCount*5 + commentCount.commentCount AS totalScore
+FROM acceptedAnswerCount, answerCount, questionCount, commentCount
+WHERE acceptedAnswerCount.OwnerUserId = answerCount.OwnerUserId AND acceptedAnswerCount.OwnerUserId = questionCount.OwnerUserId AND acceptedAnswerCount.OwnerUserId = commentCount.UserId
+ORDER BY totalScore DESC
+)
+SELECT DisplayName, Id, totalScore  
+FROM users
+INNER JOIN totalScore
+ON users.Id = totalScore.OwnerUserId
+ORDER BY totalScore DESC;
+
+
+-- votes for a given post.
+WITH upvoteCount AS (
+SELECT Count(*) AS upvoteCount
+FROM votes
+WHERE PostId = :postId AND VoteTypeId = 2
+),
+downvoteCount AS (
+SELECT Count(*) AS downvoteCount
+FROM votes
+WHERE PostId = :postId AND VoteTypeId = 3
+)
+SELECT upvoteCount, downvoteCount
+FROM upvoteCount, downvoteCount;
+
+-- Get the most interesting answered questions based on the score, reputation of asker, upvotes and downvotes of the answer
+
+WITH RelevantPosts 
+AS ( SELECT Id, Score, OwnerUserId 
+FROM posts 
+WHERE PostTypeId = 1 AND CreationDate > '2019-01-01' AND AcceptedAnswerId IS NOT NULL )
+,upvoteCount AS 
+( 
+SELECT RP.Id, RP.Score, RP.OwnerUserId, Count(*) AS upvoteCount     
+FROM RelevantPosts AS RP 
+LEFT OUTER JOIN (
+    SELECT PostId, VoteTypeId 
+    FROM votes 
+    WHERE VoteTypeId = 2)AS V     
+ON RP.Id = V.PostId     
+GROUP BY RP.Id, RP.score, RP.owneruserid )
+,downvoteCount AS 
+(     
+SELECT RP.Id, RP.Score, RP.OwnerUserId, Count(*) AS downvoteCount     
+FROM RelevantPosts AS RP 
+LEFT OUTER JOIN (
+    SELECT PostId, VoteTypeId 
+    FROM votes 
+    WHERE VoteTypeId = 3) AS V     
+ON RP.Id = V.PostId     
+GROUP BY RP.Id, RP.score, RP.owneruserid )
+,
+AllVotes AS(
+SELECT upvoteCount.Id, upvoteCount.Score, upvoteCount.OwnerUserId, upvoteCount.upvoteCount, downvoteCount.downvoteCount
+FROM upvoteCount, downvoteCount
+WHERE upvoteCount.Id = downvoteCount.Id
+)
+
+SELECT AllVotes.Id, users.Reputation/10 + AllVotes.upvoteCount*10 + AllVotes.downvoteCount*10 + AllVotes.Score*50 AS totalScore
+FROM AllVotes, users
+WHERE AllVotes.OwnerUserId = users.Id
+ORDER BY totalScore DESC
+LIMIT 100;
+
+
+
+
+-- . To fetch the tags with the most questions all time
+SELECT TagName, Id, Count FROM tags
+ORDER BY Count Desc LIMIT 20;
+
+-- To fetch the tags with with the most questions after :date
+With RelevantPosts AS (
+    SELECT Id, Tags
+    FROM posts
+    WHERE PostTypeId = 1 AND CreationDate > 
+)
+SELECT TagName, tags.Id, Count(*) AS Count
+FROM RelevantPosts, tags
+WHERE RelevantPosts.Tags LIKE '%' || tags.TagName || '%'
+GROUP BY TagName, tags.Id
+ORDER BY Count Desc LIMIT 20;
+
+
+--get tags of a question
+SELECT *
+FROM (
+    SELECT regexp_split_to_table(tags, '[><]') AS tag
+    FROM posts
+    WHERE Id = 2
+) AS tags where tag != '';
+
+
+
+--to fetch the questions similar to the given question based on the tags
+
+WITH tagsForGivenQuestion AS (
+SELECT *
+FROM (
+    SELECT regexp_split_to_table(tags, '[><]') AS tag
+    FROM posts
+    WHERE Id = :questionId
+) AS tags WHERE tag !='';
+)
+SELECT posts.Id, count(*) AS count
+FROM posts, tagsForGivenQuestion
+WHERE posts.Tags LIKE '%' || tagsForGivenQuestion.tag || '%'
+AND posts.Id != :questionId
+GROUP BY posts.Id
+ORDER BY count DESC
+LIMIT 10;
+
+--upvote
+INSERT INTO votes (Id, PostId, 2, CreationDate, UserId, BountyAmount)
+VALUES (:id, :postId, CURRENT_DATE, :userId, :bountyAmount);
+--downvote
+INSERT INTO votes (Id, PostId, 3, CreationDate, UserId, BountyAmount)
+VALUES (:id, :postId, CURRENT_DATE, :userId, :bountyAmount);
 
