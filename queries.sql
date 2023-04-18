@@ -94,6 +94,18 @@ v5 AS (SELECT id FROM v4)
 SELECT * FROM users WHERE id IN (SELECT id FROM v5);
 
 
+--account login and signup(if user does not exist already)
+DECLARE username VARCHAR(255) = 'johndoe'
+        accid INT = 99
+        pass VARCHAR(255) = 'samplepass'
+IF EXIST(SELECT * FROM users WHERE UserID = @username and (AccountId = @accid or Password = @pass) )
+BEGIN
+    Print 'User login successful'
+END
+ELSE
+BEGIN
+    INSERT INTO users (AccountId, Reputation , Views, DownVotes,UpVotes, DisplayName, Location,WebsiteUrl, AboutMe, CreationDate ,LastAccessDate, Password) VALUES(@accid, 0, 0,0,0,@username , NULL, NULL,NULL,CURRENT_DATE,CURRENT_DATE , @pass )
+END
 
 
 
