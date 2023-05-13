@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Bootstrap Login page</title>
+  <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css'>
+<link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css'><link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="author" content="Yinka Enoch Adedokun">
+	<title>Login Page</title>
+</head>
+<body>
+	<!-- Main Content -->
+	<div class="container-fluid">
+		<div class="row main-content bg-success text-center">
+			<div class="col-md-4 text-center company__info">
+				<span class="company__logo"><h2><span class="fa fa-android"></span></h2></span>
+				<h4 class="company_title">DBMS Project</h4>
+			</div>
+			<div class="col-md-8 col-xs-12 col-sm-12 login_form ">
+				<div class="container-fluid">
+					<div class="row">
+						<h2>Sign Up</h2>
+					</div>
+					<div class="row">
+						<form control="" class="form-group" id="signup-form" action="{{url_for('signup')}}" method="POST">
+							{{ form.hidden_tag() }}
+							<div class="row">
+								{{ form.displayname(class="form__input", placeholder="Display Name") }}
+							</div>
+							
+							<div class="row">
+								{{ form.aboutme(class="form__input", placeholder="About Me")}}
+							</div>
+							<div class="row">
+								{{ form.location(class="form__input", placeholder="Location")}}
+							</div>
+							<div class="row">
+								{{ form.websiteurl(class="form__input", placeholder="Website URL") }}
+							</div>
+							
+							<div class="row">
+								<!-- <span class="fa fa-lock"></span> -->
+								<!-- <input type="password" name="password" id="password1" class="form__input" placeholder="Choose Password"> -->
+								{{ form.password(size=32,class="form__input",placeholder="Password") }}
+								
+							</div>
+
+							<div class="row">
+								<!-- <span class="fa fa-lock"></span> -->
+								<!-- <input type="password" name="password" id="password2" class="form__input" placeholder="Confirm Password"> -->
+								{{ form.submit(class="btn",value="Sign Up") }}
+								
+							</div> 
+						</form>
+						<div class="row">
+							<p id="error-message"></p>
+						</div>
+					</div>
+					<div class="row">
+						<p>Already have an account? <a href="{{ url_for('login') }}">Login Here</a></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Add login.js  -->
+	<!-- <script src="{{ url_for('static', filename='js/login.js') }}"></script> -->
+</body>
+<!-- partial -->
+  
+</body>
+</html>

@@ -1,0 +1,33 @@
+.main-div{
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.main-div .data
+{
+    height: 30%;
+    width: 80%;
+
+    background: rgba(0, 131, 131, 0.2);
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding: 20px;
+    border: 3px solid #008080;
+    border-radius: 8px;
+}
+
+#data-heading{
+    color: #008080;
+}
+
+span{
+    font-weight: bold;
+    font-size: 20px;
+}
+
+p{
+    font-size: 18px;
+}

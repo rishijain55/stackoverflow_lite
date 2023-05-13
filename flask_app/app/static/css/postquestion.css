@@ -1,0 +1,149 @@
+body{
+    width: 100vw;
+    height: 100vh;
+}
+.post-question{
+    width: 100%;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main{ 
+    width: 60%;
+    height: 90%;
+    box-shadow: 0 0 50px -25px rgb(101, 101, 101);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.main .main-form{
+    width: 60%;
+    height: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    /* background: red; */
+}
+
+.main .main-form form {
+    width: 80%;
+}
+.main .main-form h2{
+    font-size: 4vh;
+}
+
+.main .main-form form .label{
+    font-size: 1.2vw;
+    font-weight: 600;
+    color: #008080;
+}
+
+.main .main-form form .inputs{ 
+    width: 100%;
+    height: 5.2vh;
+    border: 2px solid #00aeae;
+    padding-left: 20px;
+    border-radius: 5px;
+}
+
+.main .main-form form .inputs::placeholder{ 
+    color: #a9a9a9;
+    letter-spacing: 2px;
+    font-size: .9vw;
+}
+
+#body{ 
+    height: 15vh;
+}
+
+.body-input{
+    display: flex;
+    flex-direction: column;
+}
+
+.body-input-functions {
+    display: flex;
+    margin-top: 2%;
+}
+
+.body-input-functions button{
+    margin-right: .6vw;
+    width: 6.5vw;
+    height: 4vh;
+    border:3px solid #00aeae;
+    color: #00aeae;
+    background: transparent;
+    border-radius: 5px;
+}
+
+@keyframes fill-in{
+    from{
+        background: none;
+        color: #00aeae;
+    }
+    to{ 
+        background: #00aeae;
+        color: white;
+    }
+}
+
+.clicked{
+    animation: fill-in 1s forwards; 
+}
+
+.bolds{
+    font-weight: bold;
+}
+
+.italics{
+    font-style: italic;
+}
+
+.underlines {
+     text-decoration: underline;
+}
+
+.postquestion__btn, .editprofile__btn{
+    margin-top: 15px;
+    width: 39%;
+    height: 4.2vh;
+    background: #00aeae;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+/* 
+.tags-input-wrapper{
+    background: transparent;
+    padding: 10px;
+    border-radius: 4px;
+    max-width: 400px;
+    border: 1px solid #ccc
+}
+.tags-input-wrapper input{
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 140px;
+    margin-left: 8px;
+}
+.tags-input-wrapper .tag{
+    display: inline-block;
+    background-color: #fa0e7e;
+    color: white;
+    border-radius: 40px;
+    padding: 0px 3px 0px 7px;
+    margin-right: 5px;
+    margin-bottom:5px;
+    box-shadow: 0 5px 15px -2px rgba(250 , 14 , 126 , .7)
+}
+.tags-input-wrapper .tag a {
+    margin: 0 7px 3px;
+    display: inline-block;
+    cursor: pointer;
+} */

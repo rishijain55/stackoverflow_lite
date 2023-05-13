@@ -1,0 +1,37 @@
+<section class="navigation">
+    <div class="nav-container">
+      <div class="brand">
+        <a href="/">DBMS Project</a>
+      </div>
+      <nav>
+            <div class="nav-mobile"><a id="nav-toggle" href="#!"><span></span></a></div>
+            <ul class="nav-list">
+                <li> <a href="/">Home</a> </li>
+
+                <li class="form-li">
+                  <!-- <form class="d-flex" role="search" id="search"> -->
+                  <form control="" class="form-group" id="search-form" action="{{ url_for('search_questions')  }}" method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                      {{ form.search(class="form__input", placeholder="Search") }}
+                    </div>
+                    <div class="row">
+                      {{ form.submit(class="form__btn",value="Search") }}
+                    </div>
+                    
+                  </form>
+
+                </li>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('logout') }}" id="logout">Logout</a></li>
+                <li><a href="{{ url_for('profile') }}" id="profile">Profile</a></li>
+                <li><a href="{{ url_for('postquestion')}}"id = "ask-question"> Ask New Question</a></li>
+                {% else %}
+                <li><a href="{{ url_for('login') }}" id="login">Login</a></li>
+                <li><a href="{{ url_for('signup')}}" id="signup">Signup</a></li>
+                {% endif %}
+            </ul>
+      </nav>
+    </div>
+</section>

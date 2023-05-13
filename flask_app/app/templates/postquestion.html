@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title> DBMS </title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css">
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:400,700,900italic,300italic,300,100italic,100,700italic,400italic,900'>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/postquestion.css') }}">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function(){
+          $("#navbar").load("/navbar");
+      });
+    </script>
+</head>
+<body>
+  <div id="navbar"></div>
+
+  <section class="post-question">
+    <div class="main">
+        <div class="main-form">
+            <h2>Post Questions</h2>
+
+            {% block content %}
+                <form action="{{ url_for('postquestion')}}" method="post">
+                    {{ form.hidden_tag() }}
+                    
+                    <p class="label">
+                        {{form.title.label}}
+                    </p>
+                    <p>
+                        {{ form.title(size=32, class_="inputs", placeholder="title...") }}
+                    </p>
+                    <p class="label">
+                        {{form.tags.label}}
+                    </p>
+                    <p>
+                        {{ form.tags(size=32, class_="inputs", placeholder="tags...") }}
+                    </p>
+                    <p class="label">
+                        {{form.body.label}}
+                    </p>
+                    
+                    <p>
+                        <div class="body-input">
+                            {{ form.body(size=32, class_="inputs", id="body" , placeholder="body...") }}
+                            <div class="body-input-functions">
+                                <button type="button" class="func-button" id="func-button1">Bold</button>
+                                <button type="button" class="func-button" id="func-button2">Italic</button>
+                                <button type="button" class="func-button" id="func-button3">Underline</button>
+                            </div>
+                        </div>
+                        <!-- TODO: check size of body in table -->
+                    </p>
+                    <p>
+                        {{ form.submit(class="postquestion__btn",value="Submit") }}
+                    </p>
+                </form>
+            {% endblock %}
+        </div>
+    </div>
+  </section>
+
+  <script>
+    let btn1 = document.getElementById("func-button1")
+    let btn2 = document.getElementById("func-button2")
+    let btn3 = document.getElementById("func-button3")
+    let body = document.getElementById("body");
+
+    btn1.addEventListener("click", () => {
+        body.classList.toggle('bolds');
+        console.log(window.getSelection())
+        btn1.classList.toggle("clicked");
+    })
+    btn2.addEventListener("click", () => {
+        body.classList.toggle('italics');
+        btn2.classList.toggle("clicked");
+
+    })
+    btn3.addEventListener("click", () => {
+        body.classList.toggle('underlines');
+        btn3.classList.toggle("clicked");
+
+    })
+
+
+   
+
+  </script>
+    <!-- <script src="{{ url_for('static', filename='js/postquestion.js') }}"></script> -->
+
+</body>
+</html>
