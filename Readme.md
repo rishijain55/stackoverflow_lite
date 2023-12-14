@@ -27,16 +27,13 @@ This should display the tables in the database.
 
 ### Create a virtual environment and install the dependencies
 
-Using a virtual environment helps isolate your project's dependencies. Open a terminal or command prompt and navigate to your project directory:
+Using a virtual environment helps isolate your project's dependencies using conda or venv. Open a terminal or command prompt and navigate to your project directory:
 
 ```yaml
 # Create a virtual environment
-python -m venv venv
+conda create --name stackoverflow_lite python=3.10
 # Activate the virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
+conda activate stackoverflow_lite
 ```
 
 Next, cd into flask_app and install the dependencies:
@@ -44,6 +41,8 @@ Next, cd into flask_app and install the dependencies:
 ```yaml
 pip install -r requirements.txt
 ```
+Change the database credentials in the routes.py file to match your database credentials.
+
 Now, you can run the application:
 
 ```yaml
@@ -51,6 +50,7 @@ export FLASK_APP=stackoverflow_lite.py
 export FLASK_ENV=development
 flask run
 ```
+
 
 <!-- Note -->
 ## Note
