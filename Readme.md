@@ -1,10 +1,57 @@
-Command to run the flask app -
+# Stackoverflow Lite Web Application
+Welcome to the Stackoverflow Lite web application! This is a simple web application built with Flask and PostgreSQL, designed to provide a platform for asking and answering questions.
 
-. venv/bin/activate
-export FLASK_SPP=flaskr
+## Installation
+
+### Database Setup
+Download the data_dump.sql file from this link: https://drive.google.com/file/d/1EjQhs0AanazTOaf4_AI2ZqkQ-TPJsAAZ/view?usp=sharing
+
+Initialize the PostgreSQL database by running the following command in your terminal:
+
+```yaml
+psql -U <your_postgres_user> -d <your_database_name> <   <path to data dump>/data_dump.sql
+```
+
+Replace your_postgres_user with your PostgreSQL username and your_database_name with the desired database name.
+
+
+After running the SQL dump file, you can verify that the table has been created by querying the database. For example:
+
+```
+\dt
+```
+This should display the tables in the database.
+
+
+### Clone the repository
+
+### Create a virtual environment and install the dependencies
+
+Using a virtual environment helps isolate your project's dependencies. Open a terminal or command prompt and navigate to your project directory:
+
+```yaml
+# Create a virtual environment
+python -m venv venv
+# Activate the virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+```
+
+Next, cd into flask_app and install the dependencies:
+
+```yaml
+pip install -r requirements.txt
+```
+Now, you can run the application:
+
+```yaml
+export FLASK_APP=stackoverflow_lite.py
 export FLASK_ENV=development
-flask run --port 5009
+flask run
+```
 
-Might not need some or most of the packages, so try removing
-
-https://8b78-2001-df4-e000-3fd1-00-70d9.ngrok-free.app
+<!-- Note -->
+## Note
+>To read about the functioning and sql queries, read the report stackoverflow_lite_report.pdf

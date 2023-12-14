@@ -15,12 +15,12 @@ from app import login
 print("Starting routes.py")
 def get_db_connection():
     conn = psycopg2.connect(
-        host="10.17.50.91",
-        database="group_9",
-        user="group_9",
-        password="6xKbIOpdFFobZr"
+        host="localhost",
+        database="db_name",
+        user="user",
+        password="pass"
     )
-    return conn
+    return conn 
 
 print("Connecting to database....")
 
